@@ -1,0 +1,16 @@
+{
+  "name": "web-signage",
+  "version": "1.0.0",
+  "description": "A Web application to display digital information on screens",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.21.2"
+  }
+}
