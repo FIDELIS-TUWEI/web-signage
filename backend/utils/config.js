@@ -1,0 +1,18 @@
+require("dotenv").config();
+
+let PORT = process.env.PORT;
+let NODE_ENV = process.env.NODE_ENV;
+let ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET;
+let REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET;
+let REDIS_URL = process.env.REDIS_URL;
+let MYSQL_HOST = process.env.MYSQL_HOST;
+let MYSQL_ROOT_PASSWORD = process.env.MYSQL_ROOT_PASSWORD;
+let MYSQL_DATABASE = process.env.MYSQL_DATABASE;
+let MYSQL_USER = process.env.MYSQL_USER;
+let MYSQL_PASSWORD = process.env.MYSQL_PASSWORD;
+let MYSQL_PORT = process.env.MYSQL_PORT;
+
+module.exports = {
+    PORT, NODE_ENV, ACCESS_TOKEN_SECRET, REFRESH_TOKEN_SECRET, REDIS_URL, MYSQL_PORT,
+    MYSQL_HOST, MYSQL_ROOT_PASSWORD, MYSQL_DATABASE, MYSQL_USER, MYSQL_PASSWORD,
+};
