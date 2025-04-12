@@ -1,0 +1,157 @@
+version: '3.8'
+
+services:
+  # Database
+  mysql:
+    image: mysql:8.0
+    container_name: signage-mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - signage-network
+
+  # Redis for caching and pub/sub
+  redis:
+    image: redis:7.0-alpine
+    container_name: signage-redis
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    networks:
+      - signage-network
+
+  # Authentication Service
+  auth-service:
+    build:
+      context: ./services/auth-service
+    container_name: signage-auth-service
+    restart: always
+    depends_on:
+      - mysql
+      - redis
+    environment:
+      NODE_ENV: ${NODE_ENV}
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_USER: ${MYSQL_USER}
+      DB_PASSWORD: ${MYSQL_PASSWORD}
+      DB_NAME: ${MYSQL_DATABASE}
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      JWT_SECRET: ${JWT_SECRET}
+      PORT: 3001
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./services/auth-service:/app
+      - /app/node_modules
+    networks:
+      - signage-network
+
+  # Content Management Service
+  content-service:
+    build:
+      context: ./services/content-service
+    container_name: signage-content-service
+    restart: always
+    depends_on:
+      - mysql
+      - redis
+    environment:
+      NODE_ENV: ${NODE_ENV}
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_USER: ${MYSQL_USER}
+      DB_PASSWORD: ${MYSQL_PASSWORD}
+      DB_NAME: ${MYSQL_DATABASE}
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      STORAGE_PATH: /app/uploads
+      PORT: 3002
+    ports:
+      - "3002:3002"
+    volumes:
+      - ./services/content-service:/app
+      - /app/node_modules
+      - content-uploads:/app/uploads
+    networks:
+      - signage-network
+
+  # Display Management Service
+  display-service:
+    build:
+      context: ./services/display-service
+    container_name: signage-display-service
+    restart: always
+    depends_on:
+      - redis
+      - content-service
+    environment:
+      NODE_ENV: ${NODE_ENV}
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      CONTENT_SERVICE_URL: http://content-service:3002
+      PORT: 3003
+    ports:
+      - "3003:3003"
+    volumes:
+      - ./services/display-service:/app
+      - /app/node_modules
+    networks:
+      - signage-network
+
+  # Admin Frontend
+  admin-frontend:
+    build:
+      context: ./frontend/admin-panel
+    container_name: signage-admin-frontend
+    restart: always
+    environment:
+      NODE_ENV: ${NODE_ENV}
+      REACT_APP_API_URL: http://localhost:3001
+      REACT_APP_CONTENT_API_URL: http://localhost:3002
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend/admin-panel:/app
+      - /app/node_modules
+    networks:
+      - signage-network
+
+  # Display Frontend
+  display-frontend:
+    build:
+      context: ./frontend/display-interface
+    container_name: signage-display-frontend
+    restart: always
+    environment:
+      NODE_ENV: ${NODE_ENV}
+      REACT_APP_API_URL: http://localhost:3003
+    ports:
+      - "3004:3000"
+    volumes:
+      - ./frontend/display-interface:/app
+      - /app/node_modules
+    networks:
+      - signage-network
+
+# Networks
+networks:
+  signage-network:
+    driver: bridge
+
+# Volumes
+volumes:
+  mysql-data:
+  redis-data:
+  content-uploads:
