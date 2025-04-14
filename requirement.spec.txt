@@ -4,65 +4,7 @@ Hotel Digital Web Signage System (HDWSS)
 🧩 Objective
 To build a real-time digital signage web application used in hotel setups to display multimedia content (images, videos, events, forex, weather) on large screens, automatically scheduled and updated, with multi-role access and real-time socket updates.
 
-🛠️ Tech Stack
-Backend:
 
-Node.js (Express.js)
-
-MySQL
-
-Redis
-
-Socket.IO
-
-JSON Web Tokens (JWT) for authentication
-
-bcrypt for password hashing
-
-dotenv for config
-
-Cron Jobs / Node Scheduler
-
-Frontend:
-
-React.js
-
-Tailwind CSS
-
-Redux Toolkit
-
-React Player (for videos)
-
-React Router
-
-React Query / Axios
-
-Day.js / Luxon (for time logic)
-
-📁 Project Structure
-bash
-Copy
-Edit
-/backend
-    /controllers
-    /middlewares
-    /routes
-    /services
-    /utils
-    /models
-    /sockets
-    /jobs
-    config.js
-    server.js
-
-/frontend
-    /components
-    /features
-    /screens
-    /store
-    /services
-    App.jsx
-    main.jsx
 🧾 Requirements Specification
 🔐 Authentication & Authorization
  Login for users via /login/admin, /login/editor, /login/viewer
