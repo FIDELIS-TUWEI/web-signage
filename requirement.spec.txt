@@ -1,0 +1,263 @@
+✅ Project Name
+Hotel Digital Web Signage System (HDWSS)
+
+🧩 Objective
+To build a real-time digital signage web application used in hotel setups to display multimedia content (images, videos, events, forex, weather) on large screens, automatically scheduled and updated, with multi-role access and real-time socket updates.
+
+🛠️ Tech Stack
+Backend:
+
+Node.js (Express.js)
+
+MySQL
+
+Redis
+
+Socket.IO
+
+JSON Web Tokens (JWT) for authentication
+
+bcrypt for password hashing
+
+dotenv for config
+
+Cron Jobs / Node Scheduler
+
+Frontend:
+
+React.js
+
+Tailwind CSS
+
+Redux Toolkit
+
+React Player (for videos)
+
+React Router
+
+React Query / Axios
+
+Day.js / Luxon (for time logic)
+
+📁 Project Structure
+bash
+Copy
+Edit
+/backend
+    /controllers
+    /middlewares
+    /routes
+    /services
+    /utils
+    /models
+    /sockets
+    /jobs
+    config.js
+    server.js
+
+/frontend
+    /components
+    /features
+    /screens
+    /store
+    /services
+    App.jsx
+    main.jsx
+🧾 Requirements Specification
+🔐 Authentication & Authorization
+ Login for users via /login/admin, /login/editor, /login/viewer
+
+ JWT-based authentication
+
+ Role-based authorization middleware
+
+ Passwords stored securely using bcrypt
+
+ Token refresh mechanism (optional for MVP)
+
+👤 User Management (Table: Users)
+ Create and manage users with roles: admin, editor, viewer
+
+ Admins can manage all users
+
+ Editors can upload content and create playlists
+
+ Viewers have read-only access
+
+🖥️ Display Management (Table: Displays)
+ Add/edit/display screens with:
+
+Name
+
+Location
+
+Orientation: Portrait or Landscape
+
+Screen size (in inches)
+
+Status (active/inactive)
+
+📦 Content Management (Tables: Contents, Content_types)
+ Upload images, videos, text content
+
+ Define content type (image, video, text, etc.)
+
+ Specify display duration per content
+
+ Store files in /uploads or cloud storage (optional for MVP)
+
+ Add metadata (title, description)
+
+🧾 Playlist Management (Tables: Playlists, Playlist_items)
+ Create playlists (e.g., Monday Events)
+
+ Add contents to playlist with display order
+
+ Update/reorder/remove contents from playlist
+
+📅 Schedule Management (Table: Schedules)
+ Schedule playlists to display on screens:
+
+By date range (start_date, end_date)
+
+Time range (start_time, end_time)
+
+Days of the week
+
+ Priority-based schedule resolution
+
+ Auto-rotation of scheduled content via cron jobs
+
+ At midnight, today's content expires and next day’s content loads automatically
+
+🔁 Real-time Updates (via Socket.IO)
+ When content, schedule, or playlist is updated:
+
+Send real-time update to affected screens
+
+ Notify frontend React app with updated schedule/content
+
+ Display will reload automatically to reflect updates
+
+🌤️ Extra Content (Weather & Forex)
+ Fetch daily weather and forex exchange rates from public APIs (e.g., OpenWeatherMap, ExchangeRate-API)
+
+ Display alongside scheduled content
+
+ Cache with Redis and update hourly or daily
+
+🖼️ Display Screen Functionality
+ React frontend screen:
+
+Auto-slide content based on duration
+
+Portrait and landscape UI support
+
+ Fallback content if schedule is missing or expired
+
+ Responsive UI for 32" and 43" displays
+
+ Display time/date/weather/forex
+
+📦 Content Lifecycle
+ Cron job at midnight:
+
+Deactivate old day’s playlist
+
+Activate next day’s schedule
+
+Skip expired or missing playlists
+
+ Editors can prepare a week’s content ahead
+
+📂 File Uploads
+ Upload supported types: .jpg, .png, .mp4, .webm
+
+ Validate file size and type
+
+ Use Multer for multipart handling
+
+🧪 Admin Panel (React)
+ Login screen
+
+ Dashboard:
+
+Active displays
+
+Upcoming schedules
+
+Current playlists
+
+ User Management
+
+ Content Upload and Management
+
+ Playlist Editor (drag & drop)
+
+ Schedule Editor
+
+🔄 API Endpoints (Backend Overview)
+Auth
+POST /auth/login/:role
+
+GET /auth/verify
+
+Users
+POST /users
+
+GET /users
+
+PUT /users/:id
+
+DELETE /users/:id
+
+Displays
+GET /displays
+
+POST /displays
+
+PUT /displays/:id
+
+DELETE /displays/:id
+
+Content
+POST /contents
+
+GET /contents
+
+PUT /contents/:id
+
+DELETE /contents/:id
+
+Playlists
+POST /playlists
+
+GET /playlists
+
+PUT /playlists/:id
+
+DELETE /playlists/:id
+
+Schedule
+POST /schedules
+
+GET /schedules
+
+PUT /schedules/:id
+
+DELETE /schedules/:id
+
+Socket Events
+emit('schedule:update')
+
+emit('content:update')
+
+🧪 MVP Testing Criteria
+Feature	Criteria
+Auth	Can login per role, invalid credentials blocked
+Upload Content	File uploads work and display on screens
+Real-time Updates	New content appears immediately on connected screens
+Scheduler	Content switches to next day at midnight
+Display Orientation	Portrait and landscape modes render properly
+Weather/Forex	Displayed on screen, updates daily
+Admin Panel	Uploads, user management, playlist/schedule creation works as expected
