@@ -38,8 +38,8 @@ const createTables = async () => {
         //Users table
         await connection.query(`
             CREATE TABLE Users (
-                id INT AUTO_INCREMENT PRIMARY KEY,
-                username VARCHAR(255) NOT NULL UNIQUE,
+                user_id INT AUTO_INCREMENT PRIMARY KEY,
+                username VARCHAR(50) NOT NULL UNIQUE,
                 password_hash VARCHAR(255) NOT NULL,
                 email VARCHAR(255) NOT NULL UNIQUE,
                 role ENUM('admin', 'editor', 'viewer') NOT NULL DEFAULT 'editor',
@@ -51,7 +51,7 @@ const createTables = async () => {
         //Displays table
         await connection.query(`
             CREATE TABLE Displays (
-                id INT AUTO_INCREMENT PRIMARY KEY,
+                display_id INT AUTO_INCREMENT PRIMARY KEY,
                 name VARCHAR(255) NOT NULL,
                 location VARCHAR(255),
                 orientation ENUM('portrait', 'landscape') DEFAULT 'landscape',
@@ -65,7 +65,7 @@ const createTables = async () => {
         //Content types table
         await connection.query(`
             CREATE TABLE Content_types (
-                id INT PRIMARY KEY AUTO_INCREMENT,
+                content_type_id INT PRIMARY KEY AUTO_INCREMENT,
                 name VARCHAR(100) NOT NULL,
                 description TEXT
             );    
@@ -74,7 +74,7 @@ const createTables = async () => {
         //Contents table for all uploaded media and text
         await connection.query(`
             CREATE TABLE Contents (
-                id INT PRIMARY KEY AUTO_INCREMENT,
+                content_id INT PRIMARY KEY AUTO_INCREMENT,
                 title VARCHAR(255) NOT NULL,
                 description TEXT,
                 content_type_id INT NOT NULL,
@@ -92,7 +92,7 @@ const createTables = async () => {
         //Playlists table to group content
         await connection.query(`
             CREATE TABLE Playlists (
-                id INT PRIMARY KEY AUTO_INCREMENT,
+                playlist_id INT PRIMARY KEY AUTO_INCREMENT,
                 name VARCHAR(255) NOT NULL,
                 description TEXT,
                 created_by INT NOT NULL,
@@ -105,7 +105,7 @@ const createTables = async () => {
         //Playlist items to link content to playlists with order
         await connection.query(`
             CREATE TABLE Playlist_items (
-                id INT PRIMARY KEY AUTO_INCREMENT,
+                playlist_item_id INT PRIMARY KEY AUTO_INCREMENT,
                 playlist_id INT NOT NULL,
                 content_id INT NOT NULL,
                 display_order INT NOT NULL,
@@ -118,7 +118,7 @@ const createTables = async () => {
         //Schedules table for time-based content
         await connection.query(`
             CREATE TABLE schedules (
-                id INT PRIMARY KEY AUTO_INCREMENT,
+                schedule_id INT PRIMARY KEY AUTO_INCREMENT,
                 playlist_id INT NOT NULL,
                 display_id INT NOT NULL,
                 start_date DATE NOT NULL,
