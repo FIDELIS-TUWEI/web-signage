@@ -2,8 +2,10 @@ const express = require("express");
 const router = express.Router();
 
 const authRoutes = require("./auth.routes");
+const userRoutes = require("./users.routes");
 
 router.use("/auth", authRoutes);
+router.use("/users", userRoutes);
 
 // Health check endpoint
 router.get('/health', (req, res) => {
