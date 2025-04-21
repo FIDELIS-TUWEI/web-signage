@@ -42,7 +42,7 @@ const createTables = async () => {
                 username VARCHAR(50) NOT NULL UNIQUE,
                 password_hash VARCHAR(255) NOT NULL,
                 email VARCHAR(255) NOT NULL UNIQUE,
-                role ENUM('admin', 'editor', 'viewer', 'super_admin') NOT NULL DEFAULT 'editor',
+                role ENUM('admin', 'viewer', 'super_admin') NOT NULL DEFAULT 'viewer',
                 is_active BOOLEAN DEFAULT FALSE,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
