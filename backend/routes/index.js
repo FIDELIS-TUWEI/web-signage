@@ -5,6 +5,11 @@ const authRoutes = require("./auth.routes");
 
 router.use("/auth", authRoutes);
 
+// Health check endpoint
+router.get('/health', (req, res) => {
+    res.status(200).json({ status: 'ok' });
+});
+
 router.get("/", (req, res) => {
     res.status(200).json({ status: "success", message: `Welcome to the Backend API Server` });
 });
