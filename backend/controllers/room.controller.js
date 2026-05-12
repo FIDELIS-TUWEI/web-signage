@@ -124,7 +124,7 @@ exports.uploadRoomImage = asyncHandler(async (req, res, next) => {
   }
 
   const result = await uploadBuffer(req.file.buffer, {
-    folder: 'hdwss/rooms',
+    folder: 'web-signage/rooms',
     transformation: [{ width: 1920, height: 1080, crop: 'fill' }],
   });
 

@@ -2,6 +2,7 @@ const asyncHandler = require('express-async-handler');
 const Schedule = require('../models/schedule.model');
 const { AppError } = require('../middleware/errorHandler');
 const { emitToDisplay, emitToAdmin } = require('../socket');
+const { resolveActiveSchedule } = require('../services/schedule.service');
 
 exports.createSchedule = asyncHandler(async (req, res, next) => {
   const {
@@ -116,7 +117,6 @@ exports.deleteSchedule = asyncHandler(async (req, res, next) => {
 });
 
 exports.getDisplayActiveSchedule = asyncHandler(async (req, res) => {
-  const { resolveActiveSchedule } = require('../services/schedule.service');
   const result = await resolveActiveSchedule(req.params.displayId);
   res.status(200).json({ status: 'success', data: result || { schedule: null, playlist: null } });
 });

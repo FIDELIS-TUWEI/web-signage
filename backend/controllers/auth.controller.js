@@ -12,9 +12,9 @@ exports.login = asyncHandler(async (req, res, next) => {
     return next(new AppError('Email and password are required.', 400));
   }
 
-  const user = await User.findOne({ email }).select('+password').lean({ getters: true });
+  const user = await User.findOne({ email }).select('+password');
 
-  if (!user || !(await User.hydrate(user).comparePassword(password))) {
+  if (!user || !(await user.comparePassword(password))) {
     return next(new AppError('Incorrect email or password.', 401));
   }
 
@@ -42,7 +42,7 @@ exports.login = asyncHandler(async (req, res, next) => {
         lastName: user.lastName,
         email: user.email,
         role: user.role,
-        avatar: user.avatar,
+        avatar: user.avatar ?? null,
       },
       refreshToken,
       expiresIn,

@@ -1,9 +1,8 @@
 const cron = require('node-cron');
 const Meeting = require('../models/meeting.model');
 const Room = require('../models/room.model');
-const { emitToAdmin } = require('../socket');
+const { emitToAdmin, emitToDisplay } = require('../socket');
 const Display = require('../models/display.model');
-const { emitToDisplay } = require('../socket');
 const logger = require('../utils/logger');
 
 const transitionMeetings = async () => {

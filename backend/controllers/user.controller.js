@@ -120,7 +120,7 @@ exports.uploadAvatar = asyncHandler(async (req, res, next) => {
   }
 
   const result = await uploadBuffer(req.file.buffer, {
-    folder: 'hdwss/avatars',
+    folder: 'web-signage/avatars',
     transformation: [{ width: 200, height: 200, crop: 'fill', gravity: 'face' }],
   });
 

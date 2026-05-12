@@ -27,7 +27,7 @@ exports.uploadContent = asyncHandler(async (req, res, next) => {
 
     const resourceType = resolveResourceType(req.file.mimetype);
     const result = await uploadBuffer(req.file.buffer, {
-      folder: 'hdwss/content',
+      folder: 'web-signage/content',
       resource_type: resourceType,
       eager:
         resourceType === 'video'

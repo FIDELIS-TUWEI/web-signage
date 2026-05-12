@@ -29,7 +29,7 @@ exports.createOffer = asyncHandler(async (req, res, next) => {
 
   if (req.file) {
     const result = await uploadBuffer(req.file.buffer, {
-      folder: 'hdwss/offers',
+      folder: 'web-signage/offers',
       transformation: [{ width: 1200, height: 800, crop: 'fill' }],
     });
     imageUrl = result.secure_url;
@@ -107,7 +107,7 @@ exports.updateOffer = asyncHandler(async (req, res, next) => {
       await deleteByPublicId(existing.imagePublicId).catch(() => {});
     }
     const result = await uploadBuffer(req.file.buffer, {
-      folder: 'hdwss/offers',
+      folder: 'web-signage/offers',
       transformation: [{ width: 1200, height: 800, crop: 'fill' }],
     });
     updateData.imageUrl = result.secure_url;

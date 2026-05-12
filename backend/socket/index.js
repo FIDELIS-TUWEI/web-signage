@@ -107,7 +107,6 @@ const emitToAdmin = (event, data) => {
 };
 
 const emitToAll = (event, data) => {
-  emitToDisplay('', event, data); // won't match any room — use broadcast instead
   getIO().of('/display').emit(event, data);
   emitToAdmin(event, data);
 };
