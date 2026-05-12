@@ -20,9 +20,9 @@ const initSocket = (httpServer) => {
 
   adminNs.use((socket, next) => {
     try {
-      const rawCookie = socket.handshake.headers.cookie || '';
-      const cookies = cookie.parse(rawCookie);
-      const token = cookies.jwt;
+      // Accept JWT from auth handshake (browser socket.io client) or HttpOnly cookie (SSR)
+      const cookieToken = cookie.parse(socket.handshake.headers.cookie || '').jwt;
+      const token = socket.handshake.auth?.token || cookieToken;
       if (!token) return next(new Error('Authentication required'));
       const decoded = jwt.verify(token, config.JWT_SECRET);
       socket.userId = decoded.userId;
