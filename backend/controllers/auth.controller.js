@@ -24,7 +24,7 @@ exports.login = asyncHandler(async (req, res, next) => {
 
   await User.findByIdAndUpdate(user._id, { lastLogin: new Date() });
 
-  const { refreshToken, expiresIn } = await generateTokenAsCookie(
+  const { accessToken, refreshToken, expiresIn } = await generateTokenAsCookie(
     user._id,
     res,
     { role: user.role, email: user.email }
@@ -44,6 +44,7 @@ exports.login = asyncHandler(async (req, res, next) => {
         role: user.role,
         avatar: user.avatar ?? null,
       },
+      accessToken,
       refreshToken,
       expiresIn,
     },
@@ -77,7 +78,7 @@ exports.refresh = asyncHandler(async (req, res, next) => {
 
   // Rotate: revoke old token, issue new pair
   await tokenStore.revoke(decoded.userId, decoded.jti);
-  const { refreshToken: newRefreshToken, expiresIn } = await generateTokenAsCookie(
+  const { accessToken: newAccessToken, refreshToken: newRefreshToken, expiresIn } = await generateTokenAsCookie(
     user._id,
     res,
     { role: user.role, email: user.email }
@@ -86,7 +87,7 @@ exports.refresh = asyncHandler(async (req, res, next) => {
   res.status(200).json({
     status: 'success',
     message: 'Token refreshed.',
-    data: { refreshToken: newRefreshToken, expiresIn },
+    data: { accessToken: newAccessToken, refreshToken: newRefreshToken, expiresIn },
   });
 });
 
