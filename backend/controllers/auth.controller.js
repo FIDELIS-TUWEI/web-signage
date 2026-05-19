@@ -3,7 +3,13 @@ const User = require('../models/user.model');
 const { AppError } = require('../middleware/errorHandler');
 const { generateTokenAsCookie, verifyRefreshToken } = require('../utils/generateTokens');
 const tokenStore = require('../utils/tokenStore');
+const config = require('../utils/config');
 const logger = require('../utils/logger');
+
+// When Redis is not configured the token store is in-memory and is wiped on
+// every restart.  In that case we skip the whitelist check and rely solely on
+// the JWT signature + expiry, so users aren't logged out on every deploy/reload.
+const WHITELIST_ENABLED = !!(config.UPSTASH_REDIS_REST_URL && config.UPSTASH_REDIS_REST_TOKEN);
 
 exports.login = asyncHandler(async (req, res, next) => {
   const { email, password } = req.body;
@@ -66,9 +72,11 @@ exports.refresh = asyncHandler(async (req, res, next) => {
     return next(new AppError('Invalid token type.', 401));
   }
 
-  const isWhitelisted = await tokenStore.exists(decoded.userId, decoded.jti);
-  if (!isWhitelisted) {
-    return next(new AppError('Refresh token has been revoked. Please log in again.', 401));
+  if (WHITELIST_ENABLED) {
+    const isWhitelisted = await tokenStore.exists(decoded.userId, decoded.jti);
+    if (!isWhitelisted) {
+      return next(new AppError('Refresh token has been revoked. Please log in again.', 401));
+    }
   }
 
   const user = await User.findById(decoded.userId).lean();
