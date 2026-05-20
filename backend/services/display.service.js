@@ -39,7 +39,7 @@ exports.buildDisplayPayload = async (displayId) => {
             roomId: room._id,
             status: 'ongoing',
           })
-            .select('title organizerName startTime endTime attendeesCount isPrivate')
+            .select('title organizerName startTime endTime attendeesCount isPrivate notes')
             .lean()
         : Promise.resolve(null),
 
@@ -51,7 +51,7 @@ exports.buildDisplayPayload = async (displayId) => {
           })
             .sort({ startTime: 1 })
             .limit(UPCOMING_MEETINGS_LIMIT)
-            .select('title organizerName startTime endTime attendeesCount isPrivate')
+            .select('title organizerName startTime endTime attendeesCount isPrivate notes')
             .lean()
         : Promise.resolve([]),
 
@@ -93,6 +93,8 @@ exports.buildDisplayPayload = async (displayId) => {
       ? {
           name: scheduleData.schedule.name,
           priority: scheduleData.schedule.priority,
+          startDate: scheduleData.schedule.startDate,
+          endDate: scheduleData.schedule.endDate,
           startTime: scheduleData.schedule.startTime,
           endTime: scheduleData.schedule.endTime,
         }
