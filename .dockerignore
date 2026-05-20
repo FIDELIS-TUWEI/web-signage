@@ -1,0 +1,44 @@
+# Dependencies — never ship node_modules into the image; npm ci re-installs them
+node_modules
+*/node_modules
+
+# Version control
+.git
+.gitignore
+.gitattributes
+
+# Logs
+*.log
+logs/
+
+# Runtime / environment secrets — NEVER bake .env into an image
+.env
+.env.*
+!.env.example
+
+# Docker files themselves
+Dockerfile
+.dockerignore
+docker-compose*.yml
+
+# Dev tooling
+.eslintrc*
+.prettierrc*
+nodemon.json
+
+# Test artefacts
+coverage/
+*.test.js
+*.spec.js
+__tests__/
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Editor config
+.vscode/
+.idea/
+
+# Uploads (runtime data, not source)
+uploads/
