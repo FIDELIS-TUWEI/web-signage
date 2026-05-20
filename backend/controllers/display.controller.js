@@ -8,6 +8,14 @@ const logger = require('../utils/logger');
 const ADMIN_SELECTABLE_FIELDS =
   'name location orientation screenSize status pairedRoomId config isOnline lastSeen ipAddress isActive registeredAt';
 
+// Must match the threshold used by dashboard.controller.js
+const ONLINE_THRESHOLD_MS = 2 * 60 * 1000;
+
+function enrichOnlineStatus(display) {
+  const cutoff = new Date(Date.now() - ONLINE_THRESHOLD_MS);
+  return { ...display, isOnline: display.lastSeen ? display.lastSeen >= cutoff : false };
+}
+
 exports.createDisplay = asyncHandler(async (req, res, next) => {
   const { name, location, orientation, screenSize, config: cfg } = req.body;
   if (!name || !location) {
@@ -53,7 +61,7 @@ exports.getAllDisplays = asyncHandler(async (req, res) => {
     total,
     page: Number(page),
     pages: Math.ceil(total / Number(limit)),
-    data: { displays },
+    data: { displays: displays.map(enrichOnlineStatus) },
   });
 });
 
@@ -63,7 +71,7 @@ exports.getDisplayById = asyncHandler(async (req, res, next) => {
     .populate('pairedRoomId', 'name displayName status floor')
     .lean();
   if (!display) return next(new AppError('Display not found.', 404));
-  res.status(200).json({ status: 'success', data: { display } });
+  res.status(200).json({ status: 'success', data: { display: enrichOnlineStatus(display) } });
 });
 
 exports.updateDisplay = asyncHandler(async (req, res, next) => {
