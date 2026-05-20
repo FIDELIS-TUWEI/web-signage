@@ -10,9 +10,19 @@ let io;
 const initSocket = (httpServer) => {
   io = new Server(httpServer, {
     cors: {
-      origin: config.ALLOWED_ORIGINS,
+      origin: (origin, callback) => {
+        // Allow server-side / non-browser clients (no Origin header)
+        if (!origin || config.ALLOWED_ORIGINS.includes(origin)) {
+          callback(null, true);
+        } else {
+          callback(new Error(`Socket CORS: origin "${origin}" not allowed`));
+        }
+      },
       credentials: true,
     },
+    // Start with polling so the connection works even behind proxies that
+    // don't support WebSocket upgrades (e.g. Render free tier).
+    transports: ['polling', 'websocket'],
   });
 
   // Admin/editor namespace — authenticated via JWT cookie
