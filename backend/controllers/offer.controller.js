@@ -36,6 +36,12 @@ exports.createOffer = asyncHandler(async (req, res, next) => {
     imagePublicId = result.public_id;
   }
 
+  const parseArray = (val) => {
+    if (!val) return [];
+    if (Array.isArray(val)) return val;
+    try { return JSON.parse(val); } catch { return val ? [val] : []; }
+  };
+
   const offer = await Offer.create({
     title,
     description,
@@ -46,7 +52,7 @@ exports.createOffer = asyncHandler(async (req, res, next) => {
     validFrom: validFrom || null,
     validTo: validTo || null,
     priority: priority ? Number(priority) : 0,
-    displayOnScreens: displayOnScreens || [],
+    displayOnScreens: parseArray(displayOnScreens),
     tags: tags ? (Array.isArray(tags) ? tags : tags.split(',').map((t) => t.trim())) : [],
     createdBy: req.user._id,
   });
@@ -95,11 +101,25 @@ exports.getOfferById = asyncHandler(async (req, res, next) => {
 });
 
 exports.updateOffer = asyncHandler(async (req, res, next) => {
+  const parseArray = (val) => {
+    if (!val) return [];
+    if (Array.isArray(val)) return val;
+    try { return JSON.parse(val); } catch { return val ? [val] : []; }
+  };
+
   const allowed = ['title', 'description', 'price', 'validFrom', 'validTo', 'isActive', 'priority', 'displayOnScreens', 'tags'];
   const updateData = {};
   allowed.forEach((f) => {
     if (req.body[f] !== undefined) updateData[f] = req.body[f];
   });
+
+  if (updateData.displayOnScreens !== undefined) {
+    updateData.displayOnScreens = parseArray(updateData.displayOnScreens);
+  }
+
+  // Empty string means the user cleared the date — store null so the filter works correctly
+  if (updateData.validFrom === "") updateData.validFrom = null;
+  if (updateData.validTo === "") updateData.validTo = null;
 
   if (req.file) {
     const existing = await Offer.findById(req.params.id).select('imagePublicId');
